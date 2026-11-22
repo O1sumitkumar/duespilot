@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runAgent } from "./agent/runner.js";
@@ -144,7 +145,11 @@ app.get("/api/audit", (req, res) => {
   res.json(logs.slice(-200).reverse());
 });
 
-const clientDist = path.resolve(__dirname, "../dist/client");
+// Works from both tsx (server/) and compiled output (dist/server/).
+const clientDist =
+  [path.resolve(__dirname, "../dist/client"), path.resolve(__dirname, "../client")].find((dir) =>
+    fs.existsSync(path.join(dir, "index.html")),
+  ) ?? path.resolve(__dirname, "../dist/client");
 app.use(express.static(clientDist));
 app.get(/^(?!\/api).*/, (_req, res, next) => {
   res.sendFile(path.join(clientDist, "index.html"), (err) => {

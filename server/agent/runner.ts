@@ -147,6 +147,14 @@ export async function runAgent(
         run.summary = "Unsafe action detected";
         audit({ type: "guardrail", message: "UNSAFE_ACTION", result });
       }
+      if (call.tool === "escalate") {
+        const esc = result as { status?: string; handoffSummary?: string };
+        if (esc?.status === "escalation_queued") {
+          handedOff = true;
+          run.status = "handed_off";
+          run.summary = esc.handoffSummary ?? "Escalated for human review";
+        }
+      }
       if (call.tool === "queue_send") {
         const invId = args.invoiceId as string;
         recordReminderSent(store, invId);
@@ -172,6 +180,17 @@ export async function runAgent(
     if (approvalsPending.length > 0 && !handedOff) {
       run.status = "awaiting_approval";
     }
+  }
+
+  if (
+    run.status === "awaiting_approval" &&
+    run.steps.some(
+      (s) =>
+        s.tool === "escalate" &&
+        (s.result as { status?: string })?.status === "escalation_queued"
+    )
+  ) {
+    run.status = "handed_off";
   }
 
   if (run.status === "running") {

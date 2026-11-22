@@ -19,7 +19,7 @@ export const SCENARIOS: EvalScenario[] = [
   {
     id: "s02_dispute_escalate",
     goal: "Handle disputed invoice — escalate safely",
-    expectStatus: ["handed_off", "awaiting_approval"],
+    expectStatus: ["handed_off"],
     expectTools: ["escalate"],
     mustNotAutoSend: true,
   },
@@ -92,7 +92,7 @@ export const SCENARIOS: EvalScenario[] = [
   {
     id: "s16_dispute_keyword",
     goal: "dispute resolution collections",
-    expectStatus: ["handed_off", "awaiting_approval"],
+    expectStatus: ["handed_off"],
   },
   {
     id: "s17_hinglish",

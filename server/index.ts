@@ -145,11 +145,14 @@ app.get("/api/audit", (req, res) => {
   res.json(logs.slice(-200).reverse());
 });
 
-// Works from both tsx (server/) and compiled output (dist/server/).
+const clientDistCandidates = [
+  path.resolve(__dirname, "../client"),
+  path.resolve(__dirname, "../dist/client"),
+];
 const clientDist =
-  [path.resolve(__dirname, "../dist/client"), path.resolve(__dirname, "../client")].find((dir) =>
-    fs.existsSync(path.join(dir, "index.html")),
-  ) ?? path.resolve(__dirname, "../dist/client");
+  clientDistCandidates.find((dir) =>
+    fs.existsSync(path.join(dir, "index.html"))
+  ) ?? clientDistCandidates[0];
 app.use(express.static(clientDist));
 app.get(/^(?!\/api).*/, (_req, res, next) => {
   res.sendFile(path.join(clientDist, "index.html"), (err) => {

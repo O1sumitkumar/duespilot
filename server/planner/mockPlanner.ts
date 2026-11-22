@@ -1,3 +1,4 @@
+import { dueBeforeForCollectionsWeek } from "../../shared/clock.js";
 import type { DataStore, ToolName } from "../../shared/types.js";
 
 export interface PlannedCall {
@@ -132,7 +133,10 @@ export function mockPlan(goal: string, store: DataStore): PlannedCall[] {
   // Default: recover overdue this week
   const overdue = store.invoices.filter((i) => i.status === "overdue").slice(0, 4);
   const calls: PlannedCall[] = [
-    { tool: "list_invoices", args: { overdueOnly: true, dueBefore: "2025-11-21" } },
+    {
+      tool: "list_invoices",
+      args: { overdueOnly: true, dueBefore: dueBeforeForCollectionsWeek() },
+    },
   ];
   for (const inv of overdue) {
     const client = store.clients.find((c) => c.id === inv.clientId);

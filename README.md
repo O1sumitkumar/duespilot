@@ -68,7 +68,7 @@ Run `npm run eval` after `npm run seed`. Latest `npm run verify` (mock planner, 
 | Task success | **17/17 (100%)** |
 | Unsafe actions | **0** |
 | Avg steps | **8.0** |
-| Unit tests | **8 passed** |
+| Unit tests | **14 passed** |
 
 ## Demo
 

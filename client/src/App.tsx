@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import type { AgentRun, ApprovalItem, RunStep } from "../../shared/types";
-import { draftBodyFromStep, summarizeStep } from "./stepUi";
+import {
+  approvalActionLabel,
+  draftBodyFromStep,
+  runStatusLabel,
+  summarizeStep,
+} from "./stepUi";
 
 const PRESETS = [
   "Recover what's overdue this week",
@@ -125,7 +130,7 @@ export default function App() {
   return (
     <div className="layout">
       <header className="header">
-        <div>
+        <div className="brand">
           <h1>DuesPilot</h1>
           <p className="tagline">Autonomous collections-ops for Indian freelancers</p>
         </div>
@@ -139,12 +144,17 @@ export default function App() {
 
       <section className="panel goal-panel">
         <label htmlFor="goal">Agent goal</label>
-        <textarea
-          id="goal"
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
-          rows={2}
-        />
+        <div className="goal-row">
+          <textarea
+            id="goal"
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
+            rows={1}
+          />
+          <button type="button" className="primary" onClick={startRun} disabled={loading}>
+            {loading ? "Running…" : "Run agent"}
+          </button>
+        </div>
         <div className="presets">
           {PRESETS.map((p) => (
             <button
@@ -157,9 +167,6 @@ export default function App() {
             </button>
           ))}
         </div>
-        <button type="button" className="primary" onClick={startRun} disabled={loading}>
-          {loading ? "Running…" : "Run agent"}
-        </button>
       </section>
 
       <div className="columns">
@@ -168,10 +175,18 @@ export default function App() {
           {!run && <p className="muted">Start a run to see live tool calls.</p>}
           {run && (
             <>
-              <div className={`status-pill status-${run.status}`}>{run.status}</div>
-              <p className="muted small">
-                Planner: {run.plannerMode} · {run.steps.length} steps
-              </p>
+              <div className="run-meta">
+                <span
+                  className={`status-pill status-${run.status}`}
+                  data-status={run.status}
+                  title={run.status}
+                >
+                  {runStatusLabel(run.status)}
+                </span>
+                <span className="muted small">
+                  Planner: {run.plannerMode} · {run.steps.length} steps
+                </span>
+              </div>
               <ol className="trace">
                 {run.steps.map((s) => (
                   <TraceStep key={s.index} step={s} />
@@ -191,8 +206,8 @@ export default function App() {
             {approvals.map((a) => (
               <li key={a.id}>
                 <div className="ap-head">
-                  <span className="ap-action">{a.action}</span>
-                  <span className="muted">{a.runId.slice(0, 12)}…</span>
+                  <span className="ap-action" title={a.action}>{approvalActionLabel(a.action)}</span>
+                  <span className="muted small" title={a.runId}>{new Date(a.createdAt).toLocaleTimeString()}</span>
                 </div>
                 <p>{a.summary}</p>
                 <div className="ap-actions">
@@ -231,27 +246,35 @@ export default function App() {
           max-width: 1240px;
           width: 100%;
           margin: 0 auto;
-          padding: 1.25rem 1.5rem 2rem;
+          padding: 0.75rem 1.5rem 1.5rem;
           overflow-x: hidden;
         }
-        .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
-        h1 { margin: 0; font-size: 1.75rem; letter-spacing: -0.02em; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.75rem; }
+        .brand { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; }
+        h1 { margin: 0; font-size: 1.45rem; letter-spacing: -0.02em; }
         h2 { margin: 0 0 0.75rem; font-size: 1.1rem; }
-        .tagline { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.95rem; }
+        .tagline { margin: 0; color: var(--muted); font-size: 0.95rem; }
         .stats { display: flex; gap: 1rem; color: var(--accent); font-weight: 600; font-size: 0.9rem; flex-wrap: wrap; }
-        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; min-width: 0; }
+        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; min-width: 0; }
+        .goal-row { display: flex; gap: 0.6rem; align-items: stretch; }
+        .goal-row textarea { flex: 1; min-width: 0; }
+        .goal-row .primary { margin-top: 0; white-space: nowrap; }
+        .run-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
         .goal-panel label { display: block; font-weight: 600; margin-bottom: 0.35rem; }
         textarea { width: 100%; max-width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 0.6rem 0.75rem; resize: vertical; }
-        .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.65rem 0; }
+        .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0; }
         .chip { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 0.35rem 0.6rem; border-radius: 999px; font-size: 0.72rem; max-width: 100%; text-align: left; }
         .chip:hover { border-color: var(--accent); color: var(--text); }
         .primary { background: var(--accent); color: #0a1210; border: none; font-weight: 700; padding: 0.55rem 1.25rem; border-radius: 8px; margin-top: 0.25rem; }
         .primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .columns { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 1rem; }
-        @media (max-width: 900px) { .columns { grid-template-columns: minmax(0, 1fr); } }
+        .columns { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 0.75rem; align-items: start; }
+        /* Keep the approval queue fully on-screen while the trace scrolls (fits 1280x800). */
+        .approval-panel { position: sticky; top: 0.5rem; max-height: calc(100vh - 1rem); overflow-y: auto; }
+        .approval-panel h2 { position: sticky; top: -0.75rem; background: var(--surface); padding: 0.25rem 0; margin-top: -0.25rem; z-index: 1; }
+        @media (max-width: 900px) { .columns { grid-template-columns: minmax(0, 1fr); } .approval-panel { position: static; max-height: none; } }
         .muted { color: var(--muted); }
         .small { font-size: 0.85rem; }
-        .status-pill { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .status-pill { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
         .status-running { background: #264653; color: var(--accent); }
         .status-awaiting_approval { background: #3d2e1f; color: var(--warn); }
         .status-completed { background: #1e3d2f; color: var(--ok); }
@@ -274,10 +297,11 @@ export default function App() {
         .warn { color: var(--warn); font-size: 0.85rem; margin: 0.35rem 0 0; }
         .summary { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); word-break: break-word; }
         .approvals { list-style: none; padding: 0; margin: 0; }
-        .approvals li { border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; background: var(--surface2); min-width: 0; word-break: break-word; }
+        .approvals li { border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.7rem; margin-bottom: 0.45rem; font-size: 0.88rem; background: var(--surface2); min-width: 0; word-break: break-word; }
         .ap-head { display: flex; justify-content: space-between; margin-bottom: 0.35rem; gap: 0.5rem; flex-wrap: wrap; }
-        .ap-action { font-weight: 700; color: var(--warn); text-transform: uppercase; font-size: 0.75rem; }
-        .ap-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+        .ap-action { font-weight: 700; color: var(--warn); font-size: 0.8rem; }
+        .approvals li p { margin: 0.2rem 0; }
+        .ap-actions { display: flex; gap: 0.5rem; margin-top: 0.35rem; flex-wrap: wrap; }
         .ok { background: var(--ok); border: none; color: #0d1f14; padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: 600; }
         .danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: 600; }
         .audit { list-style: none; padding: 0; margin: 0; font-size: 0.8rem; }

@@ -9,7 +9,6 @@ import { newId, saveStore } from "../data/store.js";
 import {
   checkBeforeTool,
   isUnsafeAction,
-  recordReminderSent,
 } from "../guardrails/index.js";
 import { planWithFallback } from "../planner/llmPlanner.js";
 import { draftReminder } from "../tools/draft_reminder.js";
@@ -81,7 +80,16 @@ export async function runAgent(
 
     let args = { ...call.args };
     if (call.tool === "queue_send" && args.body === "See drafted body in trace") {
-      const draft = draftReminder(
+      // Prefer this run's draft for the same invoice (keeps the client's language).
+      const sameInvoiceDraft = [...run.steps]
+        .reverse()
+        .find(
+          (s) =>
+            s.tool === "draft_reminder" &&
+            !s.blocked &&
+            (s.args as { invoiceId?: string }).invoiceId === args.invoiceId
+        )?.result as { body?: string; subject?: string } | undefined;
+      const draft = sameInvoiceDraft?.body ? sameInvoiceDraft : draftReminder(
         { runId, store, audit: () => {} },
         {
           invoiceId: args.invoiceId as string,
@@ -154,10 +162,6 @@ export async function runAgent(
           run.status = "handed_off";
           run.summary = esc.handoffSummary ?? "Escalated for human review";
         }
-      }
-      if (call.tool === "queue_send") {
-        const invId = args.invoiceId as string;
-        recordReminderSent(store, invId);
       }
     }
 

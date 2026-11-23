@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runAgent } from "./agent/runner.js";
 import { loadStore, resetStore, saveStore } from "./data/store.js";
+import { recordReminderSent } from "./guardrails/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 43123;
@@ -90,7 +91,15 @@ app.post("/api/approvals/:id/approve", (req, res) => {
     res.status(404).json({ error: "not_found" });
     return;
   }
+  if (item.status !== "pending") {
+    res.status(409).json({ error: `already_${item.status}` });
+    return;
+  }
   item.status = "approved";
+  if (item.action === "queue_send" && typeof item.payload.invoiceId === "string") {
+    // Approval is the send moment: start the 7-day idempotency cooldown here.
+    recordReminderSent(store, item.payload.invoiceId);
+  }
   store.audits.push({
     id: `aud_${Date.now()}`,
     runId: item.runId,
@@ -122,6 +131,10 @@ app.post("/api/approvals/:id/reject", (req, res) => {
   const item = store.approvals.find((a) => a.id === req.params.id);
   if (!item) {
     res.status(404).json({ error: "not_found" });
+    return;
+  }
+  if (item.status !== "pending") {
+    res.status(409).json({ error: `already_${item.status}` });
     return;
   }
   item.status = "rejected";

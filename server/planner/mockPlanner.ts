@@ -1,5 +1,8 @@
-import { dueBeforeForCollectionsWeek } from "../../shared/clock.js";
+import { dueBeforeForCollectionsWeek, getReferenceNow } from "../../shared/clock.js";
+
+const daysFromNow = (d: number) => new Date(getReferenceNow().getTime() + d * 86400000).toISOString();
 import type { DataStore, ToolName } from "../../shared/types.js";
+import { checkThreadRisks, wasReminderSentRecently } from "../guardrails/index.js";
 
 export interface PlannedCall {
   tool: ToolName;
@@ -49,7 +52,9 @@ const GOAL_HANDLERS: { match: RegExp; plan: (store: DataStore) => PlannedCall[] 
         { tool: "schedule_followup", args: {
             clientId: partial.clientId,
             title: "Confirm payment plan",
-            at: new Date(Date.now() + 3 * 86400000).toISOString(),
+            at: daysFromNow(3),
+            invoiceId: partial.id,
+            channel: "call",
           },
         },
       ];
@@ -58,30 +63,39 @@ const GOAL_HANDLERS: { match: RegExp; plan: (store: DataStore) => PlannedCall[] 
   {
     match: /hindi|hinglish|हिंदी/i,
     plan: (store) => {
-      const inv = store.invoices.find(
-        (i) => i.status === "overdue" && store.clients.find((c) => c.id === i.clientId)?.preferredLang !== "en"
-      );
-      if (!inv) {
+      // One Hinglish + one Hindi client, skipping invoices already *sent* in the
+      // cooldown window (pending queue items are fine: they get superseded).
+      const picked = new Map<string, (typeof store.invoices)[number]>();
+      for (const i of store.invoices) {
+        if (i.status !== "overdue") continue;
+        const lang = store.clients.find((c) => c.id === i.clientId)?.preferredLang;
+        if (!lang || lang === "en" || picked.has(lang)) continue;
+        if (wasReminderSentRecently(store, i.id)) continue;
+        if (!checkThreadRisks(store, i.clientId).allow) continue;
+        picked.set(lang, i);
+      }
+      if (picked.size === 0) {
         return [{ tool: "list_invoices", args: { overdueOnly: true } }];
       }
-      const client = store.clients.find((c) => c.id === inv.clientId)!;
-      const lang = client.preferredLang === "hi" ? "hi" : "hinglish";
-      return [
-        { tool: "get_client", args: { clientId: inv.clientId } },
-        {
-          tool: "draft_reminder",
-          args: { invoiceId: inv.id, lang, tone: "warm" },
-        },
-        {
-          tool: "queue_send",
-          args: {
-            clientId: inv.clientId,
-            invoiceId: inv.id,
-            subject: `Payment reminder: ${inv.number}`,
-            body: "(Draft from prior step)",
-          },
-        },
-      ];
+      const calls: PlannedCall[] = [];
+      for (const [clientLang, inv] of picked) {
+        const lang = clientLang === "hi" ? "hi" : "hinglish";
+        calls.push(
+          { tool: "get_client", args: { clientId: inv.clientId } },
+          { tool: "draft_reminder", args: { invoiceId: inv.id, lang, tone: "warm" } },
+          {
+            tool: "queue_send",
+            args: {
+              clientId: inv.clientId,
+              invoiceId: inv.id,
+              subject: `Payment reminder: ${inv.number}`,
+              body: "(Draft from prior step)",
+              lang,
+            },
+          }
+        );
+      }
+      return calls;
     },
   },
   {
@@ -161,7 +175,9 @@ export function mockPlan(goal: string, store: DataStore): PlannedCall[] {
       args: {
         clientId: inv.clientId,
         title: `Follow up ${inv.number}`,
-        at: new Date(Date.now() + 5 * 86400000).toISOString(),
+        at: daysFromNow(5),
+        invoiceId: inv.id,
+        channel: lang === "en" ? "email" : "whatsapp",
       },
     });
     calls.push({
@@ -171,6 +187,7 @@ export function mockPlan(goal: string, store: DataStore): PlannedCall[] {
         invoiceId: inv.id,
         subject: `Payment reminder: ${inv.number}`,
         body: "See drafted body in trace",
+        lang: lang === "hi" ? "hi" : lang === "hinglish" ? "hinglish" : "en",
       },
     });
   }

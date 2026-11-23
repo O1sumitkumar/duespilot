@@ -55,7 +55,8 @@ On error or missing keys, the agent **falls back** to the mock planner.
 | Big-ticket | Balances > ₹50,000 go through `queue_send` → approval |
 | No auto-send | `queue_send` only queues; status is never `sent` without human Approve |
 | Dispute / angry thread | Stops collection; `escalate` + **handed_off** |
-| Idempotency | No duplicate reminders on same invoice within 7 days |
+| Idempotency | No second reminder on an invoice within 7 days of an **approved** (sent) one; a re-draft (e.g. switching to Hindi) supersedes the older *unapproved* queue item instead of duplicating it |
+| Demo clock | Synthetic invoice/thread dates are re-anchored to today on seed (`DUESPILOT_REFERENCE_DATE=YYYY-MM-DD` pins it) |
 | Audit | Every planner step, tool call, guardrail, and approval logged |
 
 ## Eval results
@@ -67,8 +68,8 @@ Run `npm run eval` after `npm run seed`. Latest `npm run verify` (mock planner, 
 | Scenarios | 17 |
 | Task success | **17/17 (100%)** |
 | Unsafe actions | **0** |
-| Avg steps | **8.0** |
-| Unit tests | **14 passed** |
+| Avg steps | **8.4** |
+| Unit tests | **21 passed** |
 
 ## Demo
 

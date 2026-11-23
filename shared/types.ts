@@ -53,6 +53,9 @@ export interface CalendarEvent {
   title: string;
   at: string;
   type: "followup" | "call" | "internal";
+  invoiceId?: string;
+  invoiceNumber?: string;
+  channel?: "email" | "whatsapp" | "call";
 }
 
 export interface ApprovalItem {
@@ -60,7 +63,8 @@ export interface ApprovalItem {
   runId: string;
   createdAt: string;
   action: "queue_send" | "escalate" | "mark_written_off";
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "superseded";
+  supersededBy?: string;
   payload: Record<string, unknown>;
   summary: string;
 }

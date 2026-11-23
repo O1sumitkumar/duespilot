@@ -88,7 +88,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv01",
       clientId: "c01",
-      number: "DP-2025-101",
+      number: "DP-101",
       amountInr: 18500,
       paidInr: 0,
       currency: "INR",
@@ -100,7 +100,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv02",
       clientId: "c02",
-      number: "DP-2025-102",
+      number: "DP-102",
       amountInr: 42000,
       paidInr: 0,
       currency: "INR",
@@ -112,7 +112,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv03",
       clientId: "c03",
-      number: "DP-2025-103",
+      number: "DP-103",
       amountInr: 75000,
       paidInr: 0,
       currency: "INR",
@@ -124,7 +124,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv04",
       clientId: "c04",
-      number: "DP-2025-104",
+      number: "DP-104",
       amountInr: 12000,
       paidInr: 6000,
       currency: "INR",
@@ -136,7 +136,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv05",
       clientId: "c05",
-      number: "DP-2025-105",
+      number: "DP-105",
       amountInr: 28000,
       paidInr: 0,
       currency: "INR",
@@ -149,7 +149,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv06",
       clientId: "c06",
-      number: "DP-2025-106",
+      number: "DP-106",
       amountInr: 9500,
       paidInr: 9500,
       currency: "INR",
@@ -161,7 +161,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv07",
       clientId: "c07",
-      number: "DP-2025-107",
+      number: "DP-107",
       amountInr: 62000,
       paidInr: 0,
       currency: "INR",
@@ -173,7 +173,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv08",
       clientId: "c08",
-      number: "DP-2025-108",
+      number: "DP-108",
       amountInr: 22000,
       paidInr: 0,
       currency: "INR",
@@ -185,7 +185,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv09",
       clientId: "c09",
-      number: "DP-2025-109",
+      number: "DP-109",
       amountInr: 89000,
       paidInr: 20000,
       currency: "INR",
@@ -197,7 +197,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv10",
       clientId: "c10",
-      number: "DP-2025-110",
+      number: "DP-110",
       amountInr: 15500,
       paidInr: 0,
       currency: "INR",
@@ -209,7 +209,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv11",
       clientId: "c01",
-      number: "DP-2025-111",
+      number: "DP-111",
       amountInr: 24000,
       paidInr: 0,
       currency: "INR",
@@ -221,7 +221,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv12",
       clientId: "c02",
-      number: "DP-2025-112",
+      number: "DP-112",
       amountInr: 18000,
       paidInr: 18000,
       currency: "INR",
@@ -233,7 +233,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv13",
       clientId: "c03",
-      number: "DP-2025-113",
+      number: "DP-113",
       amountInr: 35000,
       paidInr: 0,
       currency: "INR",
@@ -245,7 +245,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv14",
       clientId: "c04",
-      number: "DP-2025-114",
+      number: "DP-114",
       amountInr: 51000,
       paidInr: 0,
       currency: "INR",
@@ -257,7 +257,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv15",
       clientId: "c05",
-      number: "DP-2025-115",
+      number: "DP-115",
       amountInr: 8000,
       paidInr: 0,
       currency: "INR",
@@ -269,7 +269,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv16",
       clientId: "c06",
-      number: "DP-2025-116",
+      number: "DP-116",
       amountInr: 33000,
       paidInr: 0,
       currency: "INR",
@@ -281,7 +281,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv17",
       clientId: "c07",
-      number: "DP-2025-117",
+      number: "DP-117",
       amountInr: 14500,
       paidInr: 0,
       currency: "INR",
@@ -293,7 +293,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv18",
       clientId: "c08",
-      number: "DP-2025-118",
+      number: "DP-118",
       amountInr: 67000,
       paidInr: 0,
       currency: "INR",
@@ -305,7 +305,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv19",
       clientId: "c09",
-      number: "DP-2025-119",
+      number: "DP-119",
       amountInr: 11000,
       paidInr: 0,
       currency: "INR",
@@ -317,7 +317,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv20",
       clientId: "c10",
-      number: "DP-2025-120",
+      number: "DP-120",
       amountInr: 56000,
       paidInr: 0,
       currency: "INR",
@@ -329,7 +329,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv21",
       clientId: "c01",
-      number: "DP-2025-121",
+      number: "DP-121",
       amountInr: 72000,
       paidInr: 0,
       currency: "INR",
@@ -341,7 +341,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv22",
       clientId: "c02",
-      number: "DP-2025-122",
+      number: "DP-122",
       amountInr: 9500,
       paidInr: 0,
       currency: "INR",
@@ -353,7 +353,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv23",
       clientId: "c04",
-      number: "DP-2025-123",
+      number: "DP-123",
       amountInr: 14000,
       paidInr: 0,
       currency: "INR",
@@ -365,7 +365,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv24",
       clientId: "c08",
-      number: "DP-2025-124",
+      number: "DP-124",
       amountInr: 48000,
       paidInr: 24000,
       currency: "INR",
@@ -377,7 +377,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
     {
       id: "inv25",
       clientId: "c03",
-      number: "DP-2025-125",
+      number: "DP-125",
       amountInr: 26000,
       paidInr: 0,
       currency: "INR",
@@ -397,8 +397,8 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
           id: "m1",
           from: "agency",
           at: "2025-10-16",
-          subject: "Invoice DP-2025-101",
-          body: "Hi Aarav, sharing invoice for brand refresh phase 1. Due Oct 15.",
+          subject: "Invoice DP-101",
+          body: "Hi Aarav, sharing invoice for brand refresh phase 1 (net 14 terms).",
           sentiment: "neutral",
         },
         {
@@ -461,7 +461,7 @@ export const SEED_DATA: Omit<DataStore, "approvals" | "audits" | "runs" | "remin
           id: "m1",
           from: "agency",
           at: "2025-09-12",
-          body: "Friendly reminder on DP-2025-107.",
+          body: "Friendly reminder on DP-107.",
           sentiment: "neutral",
         },
       ],

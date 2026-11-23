@@ -96,7 +96,9 @@ export const TOOL_SCHEMAS = [
         properties: {
           clientId: { type: "string" },
           title: { type: "string" },
-          at: { type: "string" },
+          at: { type: "string", description: "ISO date-time of the follow-up" },
+          invoiceId: { type: "string" },
+          channel: { type: "string", enum: ["email", "whatsapp", "call"] },
         },
         required: ["clientId", "title", "at"],
       },
@@ -130,6 +132,7 @@ export const TOOL_SCHEMAS = [
           invoiceId: { type: "string" },
           subject: { type: "string" },
           body: { type: "string" },
+          lang: { type: "string", enum: ["en", "hi", "hinglish"] },
         },
         required: ["clientId", "invoiceId", "subject", "body"],
       },

@@ -58,14 +58,14 @@ export function checkBeforeTool(
           return threadCheck;
         }
       }
-      const recent = store.reminderLog.filter((r) => r.invoiceId === invoiceId);
-      for (const r of recent) {
-        if (daysSince(r.at) < REMINDER_COOLDOWN_DAYS) {
-          return {
-            allow: false,
-            reason: `Idempotency: reminder sent for ${invoiceId} within ${REMINDER_COOLDOWN_DAYS} days`,
-          };
-        }
+      // reminderLog only records reminders a human approved (i.e. actually sent).
+      // Pending, unapproved queue items do not block a re-draft (e.g. a language
+      // switch); queue_send supersedes the older pending item instead.
+      if (wasReminderSentRecently(store, invoiceId)) {
+        return {
+          allow: false,
+          reason: `Idempotency: reminder sent for ${invoiceId} within ${REMINDER_COOLDOWN_DAYS} days`,
+        };
       }
     }
   }
@@ -96,6 +96,13 @@ export function checkBeforeTool(
   return { allow: true };
 }
 
+export function wasReminderSentRecently(store: DataStore, invoiceId: string): boolean {
+  return store.reminderLog.some(
+    (r) => r.invoiceId === invoiceId && daysSince(r.at) < REMINDER_COOLDOWN_DAYS
+  );
+}
+
+/** Call only when a human approves a queued send (the real "send" moment). */
 export function recordReminderSent(store: DataStore, invoiceId: string): void {
   store.reminderLog.push({ invoiceId, at: new Date().toISOString() });
 }

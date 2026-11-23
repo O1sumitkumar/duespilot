@@ -233,7 +233,9 @@ export default function App() {
               <li key={e.id}>
                 <span className="audit-type">{e.type}</span>
                 {e.tool && <code>{e.tool}</code>}
-                <span className="audit-msg">{e.message}</span>
+                <span className="audit-msg">
+                  {e.type === "run_end" && e.message ? runStatusLabel(e.message) : e.message}
+                </span>
                 <time>{new Date(e.at).toLocaleString()}</time>
               </li>
             );
@@ -247,7 +249,7 @@ export default function App() {
           width: 100%;
           margin: 0 auto;
           padding: 0.75rem 1.5rem 1.5rem;
-          overflow-x: hidden;
+          overflow-x: clip;
         }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.75rem; }
         .brand { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; }
